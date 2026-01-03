@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Học Từ Vựng (200 Từ)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+            background-color: #ecf0f1;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .word-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .english-word {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            min-height: 70px;
+        }
+        
+        .hint {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-style: italic;
+            min-height: 30px;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .option {
+            padding: 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+        }
+        
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #check-btn {
+            background-color: #3498db;
+            color: white;
+            flex-grow: 1;
+            margin-right: 15px;
+        }
+        
+        #check-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        #check-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        #next-btn {
+            background-color: #2ecc71;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        #next-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        #next-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        #show-answer-btn {
+            background-color: #f39c12;
+            color: white;
+            margin-right: 15px;
+        }
+        
+        #show-answer-btn:hover {
+            background-color: #e67e22;
+        }
+        
+        .result {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-top: 20px;
+            min-height: 30px;
+            font-weight: 600;
+        }
+        
+        .result.correct {
+            color: #27ae60;
+        }
+        
+        .result.incorrect {
+            color: #e74c3c;
+        }
+        
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+        
+        .category-btn {
+            padding: 10px 20px;
+            background-color: #ecf0f1;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .category-btn:hover {
+            background-color: #bdc3c7;
+        }
+        
+        .score-board {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .difficulty {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .difficulty-btn {
+            padding: 10px 20px;
+            background-color: #ecf0f1;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .difficulty-btn.active {
+            background-color: #9b59b6;
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .english-word {
+                font-size: 2.5rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            #check-btn, #next-btn, #show-answer-btn {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Flashcard Học Từ Vựng</h1>
+            <p class="subtitle">200 từ tiếng Anh thông dụng & chuyên ngành Điều dưỡng - Chọn đáp án đúng trong 4 lựa chọn</p>
+        </header>
+        
+        <div class="score-board">
+            <span>Điểm: <span id="score">0</span>/<span id="total-questions">0</span></span> | 
+            <span>Đúng: <span id="correct-count">0</span> | Sai: <span id="incorrect-count">0</span></span> |
+            <span>Hoàn thành: <span id="progress-percent">0</span>%</span>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="stats">
+            <div id="current-card">Thẻ: 1/200</div>
+            <div id="category-info">Chủ đề: Tất cả</div>
+        </div>
+        
+        <div class="categories">
+            <button class="category-btn active" data-category="all">Tất cả</button>
+            <button class="category-btn" data-category="basic">Cơ bản</button>
+            <button class="category-btn" data-category="medical">Y tế</button>
+            <button class="category-btn" data-category="nursing">Điều dưỡng</button>
+        </div>
+        
+        <div class="difficulty">
+            <button class="difficulty-btn active" data-difficulty="all">Tất cả</button>
+            <button class="difficulty-btn" data-difficulty="easy">Dễ</button>
+            <button class="difficulty-btn" data-difficulty="medium">Trung bình</button>
+            <button class="difficulty-btn" data-difficulty="hard">Khó</button>
+        </div>
+        
+        <div class="card">
+            <div class="word-container">
+                <div class="english-word" id="english-word">person</div>
+                <div class="hint" id="hint">Chọn nghĩa tiếng Việt đúng cho từ trên</div>
+            </div>
+            
+            <div class="options-container" id="options-container">
+                <!-- Options will be generated by JavaScript -->
+            </div>
+            
+            <div class="result" id="result"></div>
+            
+            <div class="controls">
+                <button id="show-answer-btn">Hiện Đáp Án</button>
+                <button id="check-btn" disabled>Kiểm Tra</button>
+                <button id="next-btn" disabled>Tiếp Theo →</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Flashcard học từ vựng tiếng Anh - 200 từ thông dụng & chuyên ngành Điều dưỡng</p>
+            <p>Chọn một đáp án đúng trong 4 lựa chọn để kiểm tra kiến thức của bạn</p>
+        </footer>
+    </div>
+
+    <script>
+        // 200 từ vựng đầy đủ
+        const vocabulary = [
+            // Nhóm cơ bản (80 từ)
+            { english: "person", vietnamese: "người", category: "basic", difficulty: "easy" },
+            { english: "man", vietnamese: "đàn ông", category: "basic", difficulty: "easy" },
+            { english: "woman", vietnamese: "phụ nữ", category: "basic", difficulty: "easy" },
+            { english: "child", vietnamese: "đứa trẻ", category: "basic", difficulty: "easy" },
+            { english: "adult", vietnamese: "người lớn", category: "basic", difficulty: "easy" },
+            { english: "family", vietnamese: "gia đình", category: "basic", difficulty: "easy" },
+            { english: "friend", vietnamese: "bạn", category: "basic", difficulty: "easy" },
+            { english: "neighbor", vietnamese: "hàng xóm", category: "basic", difficulty: "medium" },
+            { english: "head", vietnamese: "đầu", category: "basic", difficulty: "easy" },
+            { english: "body", vietnamese: "cơ thể", category: "basic", difficulty: "easy" },
+            { english: "face", vietnamese: "mặt", category: "basic", difficulty: "easy" },
+            { english: "eye", vietnamese: "mắt", category: "basic", difficulty: "easy" },
+            { english: "mouth", vietnamese: "miệng", category: "basic", difficulty: "easy" },
+            { english: "hand", vietnamese: "tay", category: "basic", difficulty: "easy" },
+            { english: "foot", vietnamese: "chân", category: "basic", difficulty: "easy" },
+            { english: "health", vietnamese: "sức khỏe", category: "basic", difficulty: "easy" },
+            { english: "pain", vietnamese: "cơn đau", category: "basic", difficulty: "easy" },
+            { english: "sick", vietnamese: "ốm", category: "basic", difficulty: "easy" },
+            { english: "medicine", vietnamese: "thuốc", category: "basic", difficulty: "easy" },
+            { english: "home", vietnamese: "nhà", category: "basic", difficulty: "easy" },
+            { english: "room", vietnamese: "phòng", category: "basic", difficulty: "easy" },
+            { english: "door", vietnamese: "cửa", category: "basic", difficulty: "easy" },
+            { english: "window", vietnamese: "cửa sổ", category: "basic", difficulty: "easy" },
+            { english: "kitchen", vietnamese: "bếp", category: "basic", difficulty: "easy" },
+            { english: "bathroom", vietnamese: "phòng tắm", category: "basic", difficulty: "easy" },
+            { english: "bed", vietnamese: "giường", category: "basic", difficulty: "easy" },
+            { english: "table", vietnamese: "bàn", category: "basic", difficulty: "easy" },
+            { english: "chair", vietnamese: "ghế", category: "basic", difficulty: "easy" },
+            { english: "clock", vietnamese: "đồng hồ", category: "basic", difficulty: "easy" },
+            { english: "eat", vietnamese: "ăn", category: "basic", difficulty: "easy" },
+            { english: "drink", vietnamese: "uống", category: "basic", difficulty: "easy" },
+            { english: "sleep", vietnamese: "ngủ", category: "basic", difficulty: "easy" },
+            { english: "work", vietnamese: "làm việc", category: "basic", difficulty: "easy" },
+            { english: "study", vietnamese: "học", category: "basic", difficulty: "easy" },
+            { english: "read", vietnamese: "đọc", category: "basic", difficulty: "easy" },
+            { english: "write", vietnamese: "viết", category: "basic", difficulty: "easy" },
+            { english: "speak", vietnamese: "nói", category: "basic", difficulty: "easy" },
+            { english: "listen", vietnamese: "nghe", category: "basic", difficulty: "easy" },
+            { english: "think", vietnamese: "nghĩ", category: "basic", difficulty: "easy" },
+            { english: "need", vietnamese: "cần", category: "basic", difficulty: "easy" },
+            { english: "want", vietnamese: "muốn", category: "basic", difficulty: "easy" },
+            { english: "help", vietnamese: "giúp đỡ", category: "basic", difficulty: "easy" },
+            { english: "water", vietnamese: "nước", category: "basic", difficulty: "easy" },
+            { english: "food", vietnamese: "thức ăn", category: "basic", difficulty: "easy" },
+            { english: "rice", vietnamese: "cơm", category: "basic", difficulty: "easy" },
+            { english: "bread", vietnamese: "bánh mì", category: "basic", difficulty: "easy" },
+            { english: "egg", vietnamese: "trứng", category: "basic", difficulty: "easy" },
+            { english: "meat", vietnamese: "thịt", category: "basic", difficulty: "easy" },
+            { english: "fish", vietnamese: "cá", category: "basic", difficulty: "easy" },
+            { english: "fruit", vietnamese: "trái cây", category: "basic", difficulty: "easy" },
+            { english: "vegetable", vietnamese: "rau củ", category: "basic", difficulty: "easy" },
+            { english: "soup", vietnamese: "canh/súp", category: "basic", difficulty: "easy" },
+            { english: "street", vietnamese: "đường", category: "basic", difficulty: "easy" },
+            { english: "car", vietnamese: "xe hơi", category: "basic", difficulty: "easy" },
+            { english: "bicycle", vietnamese: "xe đạp", category: "basic", difficulty: "easy" },
+            { english: "bus", vietnamese: "xe buýt", category: "basic", difficulty: "easy" },
+            { english: "train", vietnamese: "tàu hỏa", category: "basic", difficulty: "easy" },
+            { english: "airport", vietnamese: "sân bay", category: "basic", difficulty: "medium" },
+            { english: "station", vietnamese: "nhà ga", category: "basic", difficulty: "medium" },
+            { english: "map", vietnamese: "bản đồ", category: "basic", difficulty: "medium" },
+            { english: "price", vietnamese: "giá", category: "basic", difficulty: "easy" },
+            { english: "buy", vietnamese: "mua", category: "basic", difficulty: "easy" },
+            { english: "sell", vietnamese: "bán", category: "basic", difficulty: "easy" },
+            { english: "shop", vietnamese: "cửa hàng", category: "basic", difficulty: "easy" },
+            { english: "market", vietnamese: "chợ", category: "basic", difficulty: "easy" },
+            { english: "cheap", vietnamese: "rẻ", category: "basic", difficulty: "easy" },
+            { english: "expensive", vietnamese: "đắt", category: "basic", difficulty: "easy" },
+            { english: "pay", vietnamese: "trả tiền", category: "basic", difficulty: "easy" },
+            { english: "student", vietnamese: "học sinh", category: "basic", difficulty: "easy" },
+            { english: "teacher", vietnamese: "giáo viên", category: "basic", difficulty: "easy" },
+            { english: "book", vietnamese: "sách", category: "basic", difficulty: "easy" },
+            { english: "pen", vietnamese: "bút", category: "basic", difficulty: "easy" },
+            { english: "paper", vietnamese: "giấy", category: "basic", difficulty: "easy" },
+            { english: "job", vietnamese: "công việc", category: "basic", difficulty: "easy" },
+            { english: "office", vietnamese: "văn phòng", category: "basic", difficulty: "easy" },
+            { english: "meeting", vietnamese: "cuộc họp", category: "basic", difficulty: "medium" },
+            { english: "problem", vietnamese: "vấn đề", category: "basic", difficulty: "easy" },
+            { english: "good", vietnamese: "tốt", category: "basic", difficulty: "easy" },
+            { english: "bad", vietnamese: "xấu", category: "basic", difficulty: "easy" },
+            { english: "big", vietnamese: "to", category: "basic", difficulty: "easy" },
+            { english: "small", vietnamese: "nhỏ", category: "basic", difficulty: "easy" },
+            { english: "hot", vietnamese: "nóng", category: "basic", difficulty: "easy" },
+            { english: "cold", vietnamese: "lạnh", category: "basic", difficulty: "easy" },
+            { english: "new", vietnamese: "mới", category: "basic", difficulty: "easy" },
+            { english: "old", vietnamese: "cũ", category: "basic", difficulty: "easy" },
+            { english: "happy", vietnamese: "vui", category: "basic", difficulty: "easy" },
+            { english: "sad", vietnamese: "buồn", category: "basic", difficulty: "easy" },
+            { english: "easy", vietnamese: "dễ", category: "basic", difficulty: "easy" },
+            { english: "difficult", vietnamese: "khó", category: "basic", difficulty: "easy" },
+            { english: "fast", vietnamese: "nhanh", category: "basic", difficulty: "easy" },
+            { english: "slow", vietnamese: "chậm", category: "basic", difficulty: "easy" },
+            { english: "right", vietnamese: "đúng", category: "basic", difficulty: "easy" },
+            { english: "wrong", vietnamese: "sai", category: "basic", difficulty: "easy" },
+            { english: "strong", vietnamese: "khỏe mạnh", category: "basic", difficulty: "easy" },
+            { english: "weak", vietnamese: "yếu", category: "basic", difficulty: "easy" },
+            { english: "important", vietnamese: "quan trọng", category: "basic", difficulty: "medium" },
+            { english: "different", vietnamese: "khác biệt", category: "basic", difficulty: "medium" },
+            
+            // Nhóm y tế & điều dưỡng (120 từ)
+            { english: "nurse", vietnamese: "điều dưỡng viên", category: "nursing", difficulty: "medium" },
+            { english: "patient", vietnamese: "bệnh nhân", category: "medical", difficulty: "easy" },
+            { english: "doctor", vietnamese: "bác sĩ", category: "medical", difficulty: "easy" },
+            { english: "surgeon", vietnamese: "bác sĩ phẫu thuật", category: "medical", difficulty: "hard" },
+            { english: "hospital", vietnamese: "bệnh viện", category: "medical", difficulty: "easy" },
+            { english: "clinic", vietnamese: "phòng khám", category: "medical", difficulty: "medium" },
+            { english: "ward", vietnamese: "phòng bệnh", category: "medical", difficulty: "medium" },
+            { english: "emergency room", vietnamese: "phòng cấp cứu", category: "medical", difficulty: "medium" },
+            { english: "operating room", vietnamese: "phòng mổ", category: "medical", difficulty: "medium" },
+            { english: "intensive care unit", vietnamese: "đơn vị chăm sóc đặc biệt", category: "medical", difficulty: "hard" },
+            { english: "symptom", vietnamese: "triệu chứng", category: "medical", difficulty: "medium" },
+            { english: "fever", vietnamese: "sốt", category: "medical", difficulty: "easy" },
+            { english: "cough", vietnamese: "ho", category: "medical", difficulty: "easy" },
+            { english: "headache", vietnamese: "đau đầu", category: "medical", difficulty: "easy" },
+            { english: "nausea", vietnamese: "buồn nôn", category: "medical", difficulty: "medium" },
+            { english: "vomiting", vietnamese: "nôn", category: "medical", difficulty: "medium" },
+            { english: "bleeding", vietnamese: "chảy máu", category: "medical", difficulty: "medium" },
+            { english: "infection", vietnamese: "nhiễm trùng", category: "medical", difficulty: "medium" },
+            { english: "inflammation", vietnamese: "viêm", category: "medical", difficulty: "hard" },
+            { english: "diagnosis", vietnamese: "chẩn đoán", category: "medical", difficulty: "medium" },
+            { english: "injection", vietnamese: "mũi tiêm", category: "medical", difficulty: "medium" },
+            { english: "vaccination", vietnamese: "tiêm chủng", category: "medical", difficulty: "medium" },
+            { english: "bandage", vietnamese: "băng gạc", category: "medical", difficulty: "easy" },
+            { english: "dressing", vietnamese: "thay băng", category: "medical", difficulty: "medium" },
+            { english: "stitches", vietnamese: "mũi khâu", category: "medical", difficulty: "medium" },
+            { english: "check-up", vietnamese: "kiểm tra sức khỏe", category: "medical", difficulty: "easy" },
+            { english: "monitor", vietnamese: "theo dõi", category: "medical", difficulty: "medium" },
+            { english: "measure", vietnamese: "đo lường", category: "medical", difficulty: "medium" },
+            { english: "temperature", vietnamese: "nhiệt độ", category: "medical", difficulty: "easy" },
+            { english: "blood pressure", vietnamese: "huyết áp", category: "medical", difficulty: "medium" },
+            { english: "pulse", vietnamese: "mạch", category: "medical", difficulty: "medium" },
+            { english: "respiration", vietnamese: "nhịp thở", category: "medical", difficulty: "medium" },
+            { english: "hygiene", vietnamese: "vệ sinh", category: "medical", difficulty: "medium" },
+            { english: "syringe", vietnamese: "ống tiêm", category: "medical", difficulty: "medium" },
+            { english: "needle", vietnamese: "kim tiêm", category: "medical", difficulty: "medium" },
+            { english: "thermometer", vietnamese: "nhiệt kế", category: "medical", difficulty: "easy" },
+            { english: "stethoscope", vietnamese: "ống nghe", category: "medical", difficulty: "medium" },
+            { english: "wheelchair", vietnamese: "xe lăn", category: "medical", difficulty: "easy" },
+            { english: "crutches", vietnamese: "nạng", category: "medical", difficulty: "medium" },
+            { english: "IV drip", vietnamese: "truyền dịch", category: "medical", difficulty: "hard" },
+            { english: "oxygen mask", vietnamese: "mặt nạ oxy", category: "medical", difficulty: "medium" },
+            { english: "bedpan", vietnamese: "bô vệ sinh", category: "medical", difficulty: "medium" },
+            { english: "prescription", vietnamese: "đơn thuốc", category: "medical", difficulty: "medium" },
+            { english: "dose", vietnamese: "liều lượng", category: "medical", difficulty: "medium" },
+            { english: "pill", vietnamese: "viên thuốc", category: "medical", difficulty: "easy" },
+            { english: "antibiotic", vietnamese: "kháng sinh", category: "medical", difficulty: "medium" },
+            { english: "painkiller", vietnamese: "thuốc giảm đau", category: "medical", difficulty: "medium" },
+            { english: "side effect", vietnamese: "tác dụng phụ", category: "medical", difficulty: "medium" },
+            { english: "recovery", vietnamese: "sự hồi phục", category: "medical", difficulty: "medium" },
+            { english: "discharge", vietnamese: "xuất viện", category: "medical", difficulty: "medium" },
+            { english: "chronic disease", vietnamese: "bệnh mãn tính", category: "medical", difficulty: "hard" },
+            { english: "acute condition", vietnamese: "tình trạng cấp tính", category: "medical", difficulty: "hard" },
+            { english: "wound", vietnamese: "vết thương", category: "medical", difficulty: "medium" },
+            { english: "ulcer", vietnamese: "loét", category: "medical", difficulty: "hard" },
+            { english: "fracture", vietnamese: "gãy xương", category: "medical", difficulty: "medium" },
+            { english: "diabetes", vietnamese: "tiểu đường", category: "medical", difficulty: "medium" },
+            { english: "hypertension", vietnamese: "tăng huyết áp", category: "medical", difficulty: "hard" },
+            { english: "hypotension", vietnamese: "hạ huyết áp", category: "medical", difficulty: "hard" },
+            { english: "pneumonia", vietnamese: "viêm phổi", category: "medical", difficulty: "hard" },
+            { english: "stroke", vietnamese: "đột quỵ", category: "medical", difficulty: "hard" },
+            { english: "heart attack", vietnamese: "nhồi máu cơ tim", category: "medical", difficulty: "hard" },
+            { english: "patient assessment", vietnamese: "đánh giá bệnh nhân", category: "nursing", difficulty: "hard" },
+            { english: "nursing care plan", vietnamese: "kế hoạch chăm sóc điều dưỡng", category: "nursing", difficulty: "hard" },
+            { english: "vital signs", vietnamese: "dấu hiệu sinh tồn", category: "nursing", difficulty: "medium" },
+            { english: "catheterization", vietnamese: "thông tiểu", category: "nursing", difficulty: "hard" },
+            { english: "urinary catheter", vietnamese: "ống thông tiểu", category: "nursing", difficulty: "hard" },
+            { english: "nasogastric tube", vietnamese: "ống thông mũi-dạ dày", category: "nursing", difficulty: "hard" },
+            { english: "wound care", vietnamese: "chăm sóc vết thương", category: "nursing", difficulty: "medium" },
+            { english: "sterilization", vietnamese: "khử trùng", category: "nursing", difficulty: "medium" },
+            { english: "disinfection", vietnamese: "tiệt trùng", category: "nursing", difficulty: "medium" },
+            { english: "palliative care", vietnamese: "chăm sóc giảm nhẹ", category: "nursing", difficulty: "hard" },
+            { english: "rehabilitation", vietnamese: "phục hồi chức năng", category: "nursing", difficulty: "hard" },
+            { english: "ambulation", vietnamese: "sự đi lại", category: "nursing", difficulty: "hard" },
+            { english: "vein", vietnamese: "tĩnh mạch", category: "medical", difficulty: "medium" },
+            { english: "artery", vietnamese: "động mạch", category: "medical", difficulty: "medium" },
+            { english: "nerve", vietnamese: "dây thần kinh", category: "medical", difficulty: "hard" },
+            { english: "joint", vietnamese: "khớp", category: "medical", difficulty: "medium" },
+            { english: "muscle", vietnamese: "cơ", category: "medical", difficulty: "medium" },
+            { english: "bone", vietnamese: "xương", category: "medical", difficulty: "easy" },
+            { english: "skin", vietnamese: "da", category: "medical", difficulty: "easy" },
+            { english: "organ", vietnamese: "cơ quan nội tạng", category: "medical", difficulty: "medium" },
+            { english: "respiratory system", vietnamese: "hệ hô hấp", category: "medical", difficulty: "hard" },
+            { english: "cardiovascular system", vietnamese: "hệ tim mạch", category: "medical", difficulty: "hard" },
+            { english: "digestive system", vietnamese: "hệ tiêu hóa", category: "medical", difficulty: "hard" },
+            { english: "intravenous", vietnamese: "truyền tĩnh mạch", category: "medical", difficulty: "hard" },
+            { english: "subcutaneous", vietnamese: "dưới da", category: "medical", difficulty: "hard" },
+            { english: "intramuscular", vietnamese: "trong cơ", category: "medical", difficulty: "hard" },
+            { english: "topical", vietnamese: "dùng ngoài da", category: "medical", difficulty: "hard" },
+            { english: "anesthesia", vietnamese: "gây mê", category: "medical", difficulty: "hard" },
+            { english: "antiseptic", vietnamese: "chất sát trùng", category: "medical", difficulty: "medium" },
+            { english: "sedative", vietnamese: "thuốc an thần", category: "medical", difficulty: "hard" },
+            { english: "anti-inflammatory", vietnamese: "thuốc chống viêm", category: "medical", difficulty: "hard" },
+            { english: "contraindication", vietnamese: "chống chỉ định", category: "medical", difficulty: "hard" },
+            { english: "defibrillator", vietnamese: "máy sốc điện tim", category: "medical", difficulty: "hard" },
+            { english: "ventilator", vietnamese: "máy thở", category: "medical", difficulty: "hard" },
+            { english: "infusion pump", vietnamese: "máy bơm truyền dịch", category: "medical", difficulty: "hard" },
+            { english: "glucometer", vietnamese: "máy đo đường huyết", category: "medical", difficulty: "hard" },
+            { english: "pulse oximeter", vietnamese: "máy đo nồng độ oxy", category: "medical", difficulty: "hard" },
+            { english: "sphygmomanometer", vietnamese: "máy đo huyết áp", category: "medical", difficulty: "hard" },
+            { english: "gauze", vietnamese: "gạc y tế", category: "medical", difficulty: "medium" },
+            { english: "suture", vietnamese: "chỉ khâu", category: "medical", difficulty: "hard" }
+        ];
+
+        // Biến toàn cục
+        let currentIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let selectedOption = null;
+        let isAnswered = false;
+        let currentCategory = "all";
+        let currentDifficulty = "all";
+        let filteredVocabulary = [...vocabulary];
+        
+        // DOM Elements
+        const englishWordEl = document.getElementById('english-word');
+        const hintEl = document.getElementById('hint');
+        const optionsContainerEl = document.getElementById('options-container');
+        const checkBtn = document.getElementById('check-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const showAnswerBtn = document.getElementById('show-answer-btn');
+        const resultEl = document.getElementById('result');
+        const scoreEl = document.getElementById('score');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const correctCountEl = document.getElementById('correct-count');
+        const incorrectCountEl = document.getElementById('incorrect-count');
+        const progressPercentEl = document.getElementById('progress-percent');
+        const progressBarEl = document.getElementById('progress-bar');
+        const currentCardEl = document.getElementById('current-card');
+        const categoryInfoEl = document.getElementById('category-info');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+        
+        // Khởi tạo
+        function init() {
+            totalQuestionsEl.textContent = filteredVocabulary.length;
+            updateProgress();
+            loadCard();
+            setupEventListeners();
+        }
+        
+        // Thiết lập event listeners
+        function setupEventListeners() {
+            checkBtn.addEventListener('click', checkAnswer);
+            nextBtn.addEventListener('click', nextCard);
+            showAnswerBtn.addEventListener('click', showAnswer);
+            
+            // Xử lý sự kiện cho các nút category
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Xóa active class từ tất cả các nút
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // Thêm active class cho nút được click
+                    button.classList.add('active');
+                    
+                    // Lấy category từ data attribute
+                    currentCategory = button.getAttribute('data-category');
+                    applyFilters();
+                });
+            });
+            
+            // Xử lý sự kiện cho các nút difficulty
+            difficultyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Xóa active class từ tất cả các nút
+                    difficultyButtons.forEach(btn => btn.classList.remove('active'));
+                    // Thêm active class cho nút được click
+                    button.classList.add('active');
+                    
+                    // Lấy difficulty từ data attribute
+                    currentDifficulty = button.getAttribute('data-difficulty');
+                    applyFilters();
+                });
+            });
+        }
+        
+        // Áp dụng bộ lọc category và difficulty
+        function applyFilters() {
+            filteredVocabulary = vocabulary.filter(word => {
+                // Lọc theo category
+                const categoryMatch = currentCategory === "all" || word.category === currentCategory;
+                
+                // Lọc theo difficulty
+                const difficultyMatch = currentDifficulty === "all" || word.difficulty === currentDifficulty;
+                
+                return categoryMatch && difficultyMatch;
+            });
+            
+            // Reset về thẻ đầu tiên
+            currentIndex = 0;
+            score = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            
+            // Cập nhật UI
+            totalQuestionsEl.textContent = filteredVocabulary.length;
+            updateScore();
+            updateProgress();
+            loadCard();
+            
+            // Cập nhật thông tin category
+            let categoryText = "";
+            switch(currentCategory) {
+                case "all": categoryText = "Tất cả"; break;
+                case "basic": categoryText = "Cơ bản"; break;
+                case "medical": categoryText = "Y tế"; break;
+                case "nursing": categoryText = "Điều dưỡng"; break;
+            }
+            
+            let difficultyText = "";
+            switch(currentDifficulty) {
+                case "all": difficultyText = "Tất cả"; break;
+                case "easy": difficultyText = "Dễ"; break;
+                case "medium": difficultyText = "Trung bình"; break;
+                case "hard": difficultyText = "Khó"; break;
+            }
+            
+            categoryInfoEl.textContent = `Chủ đề: ${categoryText} | Độ khó: ${difficultyText}`;
+        }
+        
+        // Tải thẻ hiện tại
+        function loadCard() {
+            if (filteredVocabulary.length === 0) {
+                englishWordEl.textContent = "Không có từ nào";
+                hintEl.textContent = "Hãy thay đổi bộ lọc để xem từ vựng";
+                optionsContainerEl.innerHTML = "";
+                return;
+            }
+            
+            const currentWord = filteredVocabulary[currentIndex];
+            
+            // Hiển thị từ tiếng Anh
+            englishWordEl.textContent = currentWord.english;
+            
+            // Hiển thị gợi ý
+            hintEl.textContent = "Chọn nghĩa tiếng Việt đúng cho từ trên";
+            
+            // Tạo 4 lựa chọn (1 đúng + 3 sai)
+            const options = generateOptions(currentWord);
+            
+            // Hiển thị các lựa chọn
+            displayOptions(options);
+            
+            // Reset trạng thái
+            isAnswered = false;
+            selectedOption = null;
+            resultEl.textContent = "";
+            resultEl.className = "result";
+            
+            // Cập nhật nút
+            checkBtn.disabled = true;
+            nextBtn.disabled = true;
+            checkBtn.textContent = "Kiểm Tra";
+            
+            // Cập nhật thông tin thẻ hiện tại
+            currentCardEl.textContent = `Thẻ: ${currentIndex + 1}/${filteredVocabulary.length}`;
+        }
+        
+        // Tạo 4 lựa chọn (1 đúng, 3 sai)
+        function generateOptions(correctWord) {
+            const options = [{text: correctWord.vietnamese, isCorrect: true}];
+            
+            // Lấy 3 từ ngẫu nhiên làm lựa chọn sai
+            const wrongOptions = vocabulary
+                .filter(word => word.vietnamese !== correctWord.vietnamese)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3)
+                .map(word => ({text: word.vietnamese, isCorrect: false}));
+            
+            // Kết hợp các lựa chọn và xáo trộn
+            const allOptions = [...options, ...wrongOptions];
+            return shuffleArray(allOptions);
+        }
+        
+        // Hiển thị các lựa chọn
+        function displayOptions(options) {
+            optionsContainerEl.innerHTML = "";
+            
+            options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                optionEl.textContent = `${index + 1}. ${option.text}`;
+                optionEl.dataset.index = index;
+                optionEl.dataset.isCorrect = option.isCorrect;
+                
+                optionEl.addEventListener('click', () => selectOption(optionEl, option.isCorrect));
+                
+                optionsContainerEl.appendChild(optionEl);
+            });
+        }
+        
+        // Xử lý khi chọn một lựa chọn
+        function selectOption(optionEl, isCorrect) {
+            if (isAnswered) return;
+            
+            // Xóa tất cả selection trước đó
+            document.querySelectorAll('.option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Đánh dấu lựa chọn hiện tại
+            optionEl.classList.add('selected');
+            selectedOption = {element: optionEl, isCorrect: isCorrect};
+            
+            // Kích hoạt nút kiểm tra
+            checkBtn.disabled = false;
+        }
+        
+        // Kiểm tra đáp án
+        function checkAnswer() {
+            if (!selectedOption || isAnswered) return;
+            
+            isAnswered = true;
+            
+            // Hiển thị kết quả
+            if (selectedOption.isCorrect) {
+                resultEl.textContent = "✅ Chính xác!";
+                resultEl.className = "result correct";
+                selectedOption.element.classList.add('correct');
+                score += 10;
+                correctCount++;
+            } else {
+                resultEl.textContent = "❌ Sai rồi!";
+                resultEl.className = "result incorrect";
+                selectedOption.element.classList.add('incorrect');
+                incorrectCount++;
+                
+                // Tìm và highlight đáp án đúng
+                document.querySelectorAll('.option').forEach(el => {
+                    if (el.dataset.isCorrect === "true") {
+                        el.classList.add('correct');
+                    }
+                });
+            }
+            
+            // Cập nhật điểm
+            updateScore();
+            
+            // Thay đổi nút
+            checkBtn.disabled = true;
+            nextBtn.disabled = false;
+            checkBtn.textContent = "Đã Kiểm Tra";
+        }
+        
+        // Hiển thị đáp án
+        function showAnswer() {
+            if (isAnswered) return;
+            
+            // Tìm và highlight đáp án đúng
+            document.querySelectorAll('.option').forEach(el => {
+                if (el.dataset.isCorrect === "true") {
+                    el.classList.add('correct');
+                    resultEl.textContent = `Đáp án đúng: ${el.textContent.substring(3)}`;
+                    resultEl.className = "result correct";
+                }
+            });
+            
+            isAnswered = true;
+            checkBtn.disabled = true;
+            nextBtn.disabled = false;
+            checkBtn.textContent = "Đã Xem Đáp Án";
+        }
+        
+        // Chuyển đến thẻ tiếp theo
+        function nextCard() {
+            currentIndex++;
+            
+            // Nếu đã hết thẻ, quay lại từ đầu
+            if (currentIndex >= filteredVocabulary.length) {
+                currentIndex = 0;
+                
+                // Hiển thị thông báo hoàn thành
+                alert(`Chúc mừng! Bạn đã hoàn thành tất cả ${filteredVocabulary.length} thẻ.\n\nĐiểm số: ${score}/${filteredVocabulary.length * 10}\nĐúng: ${correctCount} | Sai: ${incorrectCount}`);
+            }
+            
+            loadCard();
+            updateProgress();
+        }
+        
+        // Cập nhật điểm số
+        function updateScore() {
+            scoreEl.textContent = score;
+            correctCountEl.textContent = correctCount;
+            incorrectCountEl.textContent = incorrectCount;
+        }
+        
+        // Cập nhật tiến độ
+        function updateProgress() {
+            if (filteredVocabulary.length === 0) {
+                progressPercentEl.textContent = "0";
+                progressBarEl.style.width = "0%";
+                return;
+            }
+            
+            const percent = Math.round(((currentIndex) / filteredVocabulary.length) * 100);
+            progressPercentEl.textContent = percent;
+            progressBarEl.style.width = `${percent}%`;
+        }
+        
+        // Hàm xáo trộn mảng
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Khởi chạy ứng dụng
+        init();
+    </script>
+</body>
+</html>
